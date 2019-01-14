@@ -132,8 +132,8 @@ func TestGetDifferencesNotEqual(t *testing.T) {
 	require.NoError(t, err, "Expected no error")
 	assert.Equal(t,
 		differences{
-			text:"<!DOCTYPE html>\n\t<html>\n\t<head>\n\t<link rel=\"stylesheet\" href=\"styles.css\">\n\t</head>\n\t<body>\n\n\t<h1>This is a heading</h1>\n\t<p>This is a paragraph.</p>\n\n\t</body>\n\t</html>\x1b[32m - 1\x1b[0m",
-			html:"<span>&lt;!DOCTYPE html&gt;&para;<br>\t&lt;html&gt;&para;<br>\t&lt;head&gt;&para;<br>\t&lt;link rel=&#34;stylesheet&#34; href=&#34;styles.css&#34;&gt;&para;<br>\t&lt;/head&gt;&para;<br>\t&lt;body&gt;&para;<br>&para;<br>\t&lt;h1&gt;This is a heading&lt;/h1&gt;&para;<br>\t&lt;p&gt;This is a paragraph.&lt;/p&gt;&para;<br>&para;<br>\t&lt;/body&gt;&para;<br>\t&lt;/html&gt;</span><ins style=\"background:#e6ffe6;\"> - 1</ins>"},
+			text:"--- Old\n+++ Current\n@@ -9,4 +9,4 @@\n \t<p>This is a paragraph.</p>\n \n \t</body>\n-\t</html>\n+\t</html> - 1\n",
+			html:"<span>--- Old<br />+++ Current<br />@@ -9,4 +9,4 @@<br /> \t&lt;p&gt;This is a paragraph.&lt;/p&gt;<br /> <br /> \t&lt;/body&gt;<br />-\t&lt;/html&gt;<br />+\t&lt;/html&gt; - 1<br /></span>"},
 		diffs)
 }
 

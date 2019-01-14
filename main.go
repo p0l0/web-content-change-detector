@@ -6,11 +6,13 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/pmezard/go-difflib/difflib"
 	"gopkg.in/gomail.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
+	"html"
 	"time"
 )
 
@@ -120,20 +122,23 @@ func getLastEntries(db *sql.DB) ([]dbRow, error) {
 }
 
 func getDifferences(response1 string, response2 string) (differences, error) {
-	dmp := diffmatchpatch.New()
-
-	diffs := dmp.DiffMain(response1, response2, false)
-
-	// Maybe there is a better way to do this...
+	diff := difflib.UnifiedDiff{
+		A:        difflib.SplitLines(response1),
+		B:        difflib.SplitLines(response2),
+		FromFile: "Old",
+		ToFile:   "Current",
+		Context:  3,
+		Eol:      "\n",
+	}
 	var result differences
-	//fmt.Println(len(diffs))
-	for i:=0; i < len(diffs); i++ {
-		//fmt.Println(diffs[i].Type)
-		if diffs[i].Type != diffmatchpatch.DiffEqual {
-			result.text = dmp.DiffPrettyText(diffs)
-			result.html = dmp.DiffPrettyHtml(diffs)
-			break
-		}
+	var err error
+
+	result.text, err = difflib.GetUnifiedDiffString(diff)
+	if err != nil {
+		return result, err
+	}
+	if result.text != "" {
+		result.html = "<span>" + strings.Replace(html.EscapeString(result.text), "\n", "<br />", -1) + "</span>"
 	}
 
 	return result, nil
@@ -144,8 +149,8 @@ func sendEmail(diffs differences, fromEmail string, toEmail string, url string, 
 	message.SetHeader("From", fromEmail)
 	message.SetHeader("To", toEmail)
 	message.SetHeader("Subject", "Change detected on URL: " + url)
-	message.SetBody("text/plain", diffs.text)
 	message.SetBody("text/html", diffs.html)
+	message.AddAlternative("text/plain", diffs.text)
 
 	mail := gomail.Dialer{Host: "localhost", Port: 587, TLSConfig: &tls.Config{ServerName: smtpTLSHost}}
 	err := mail.DialAndSend(message)
@@ -211,6 +216,9 @@ func main() {
 	}
 
 	diffs, err := getDifferences(resultData[0].response, resultData[1].response)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	if (differences{}) != diffs {
 		err = sendEmail(diffs, *fromEmail, *toEmail, resultData[0].url, *smtpTLSHost)

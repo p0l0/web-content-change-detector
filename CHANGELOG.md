@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## (0.0.3) - 2018-01-13
+### Modified
+- Switched from "github.com/sergi/go-diff/diffmatchpatch" to "github.com/pmezard/go-difflib/difflib"
+
 ## (0.0.2) - 2018-01-13
 ### Added
 - Added tests
