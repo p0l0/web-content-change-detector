@@ -29,7 +29,7 @@ release-linux-darwin: deps
 
 deps:
 	$(info Downloading dependencies...)
-	@go get .
+	@go get -v -t ./...
 
 test: deps
 	$(info Running tests...)
