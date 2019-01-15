@@ -1,18 +1,20 @@
-VERSION=0.0.3
+VERSION=0.0.4
 
 # Darwin or Linux
 ARCH=$(shell bash -c "uname | tr '[:upper:]' '[:lower:]'")
 DESTDIR="bin"
 
+.PHONY: all release-darwin-linux release-linux-darwin deps test
+
 ifeq ($(ARCH), darwin)
-release: release-darwin-linux
+all: release-darwin-linux
 endif
 
 ifeq ($(ARCH), linux)
-release: release-linux-darwin
+all: release-linux-darwin
 endif
 
-release: deps
+all: deps
 	$(info Compiling $(ARCH) binary...)
 	@go build -o $(DESTDIR)/web-content-change-detector-$(VERSION)-$(ARCH) .
 
@@ -30,6 +32,10 @@ deps:
 	@go get .
 
 test: deps
-	go test -v
+	$(info Running tests...)
+	@go test -v -coverprofile .coverage.txt
+	@go tool cover -func .coverage.txt
 
-.PHONY: release release-darwin-linux release-linux-darwin deps test
+coverage: test
+	@go tool cover -html=.coverage.txt
+

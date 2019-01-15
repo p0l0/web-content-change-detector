@@ -1,0 +1,9 @@
+image: golang
+stages:
+  - build
+before_script:
+  - apt-get update && apt-get install -y make
+build:
+  stage: build
+  script:
+    - make test

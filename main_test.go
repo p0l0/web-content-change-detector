@@ -138,5 +138,5 @@ func TestGetDifferencesNotEqual(t *testing.T) {
 }
 
 func TestSendEmail(t *testing.T) {
-
+	//@todo - Look how to mock SMTP!
 }
