@@ -3,7 +3,7 @@ stages:
   - build
 before_script:
   - apt-get update && apt-get install -y make
-  - mkdir -p /go/src/gitlab.com/_p0l0_/web-content-change-detector
+  - mkdir -p /go/src/gitlab.com/_p0l0_
   - ln -s /builds/_p0l0_/web-content-change-detector /go/src/gitlab.com/_p0l0_/web-content-change-detector
   - cd /go/src/gitlab.com/_p0l0_/web-content-change-detector
 build:
