@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## (0.0.5) - 2018-05-08
+### Fixed
+- Multiple URLs in one database did not work
+### Modified
+- Forked "github.com/pmezard/go-difflib/difflib" to add "ignoreWhitespaces" option
+### Added
+- Implemented possibility to test sendMail function
+
 ## (0.0.4) - 2018-01-15
 ### Added
 - Added support for Gitlab CI

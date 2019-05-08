@@ -6,13 +6,13 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/pmezard/go-difflib/difflib"
+	"gitlab.com/_p0l0_/web-content-change-detector/difflib"
 	"gopkg.in/gomail.v2"
+	"html"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
-	"html"
 	"time"
 )
 
@@ -53,7 +53,6 @@ func getContent(scanUrl string) ([]byte, error) {
 		return nil, fmt.Errorf("Incorrect HTTP Status Code: %s", response.Status)
 	}
 
-
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, fmt.Errorf("Unable to read Response: %s", err)
@@ -89,6 +88,7 @@ func insertRecoredData(db *sql.DB, scanUrl string, response []byte) (error) {
 
 	_, err = stmt.Exec(scanUrl, fmt.Sprintf("%s", response))
 	if err != nil {
+		tx.Rollback()
 		return err
 	}
 	tx.Commit()
@@ -96,8 +96,8 @@ func insertRecoredData(db *sql.DB, scanUrl string, response []byte) (error) {
 	return nil
 }
 
-func getLastEntries(db *sql.DB) ([]dbRow, error) {
-	rows, err := db.Query("SELECT url, datetime(crawlTime) AS crawlTime, response FROM responseData ORDER BY crawlTime DESC LIMIT 2")
+func getLastEntries(db *sql.DB, scanUrl string) ([]dbRow, error) {
+	rows, err := db.Query("SELECT url, datetime(crawlTime) AS crawlTime, response FROM responseData WHERE url = ? ORDER BY crawlTime DESC LIMIT 2", scanUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -121,10 +121,10 @@ func getLastEntries(db *sql.DB) ([]dbRow, error) {
 	return resultData, nil
 }
 
-func getDifferences(response1 string, response2 string) (differences, error) {
+func getDifferences(newResponse string, oldResponse string) (differences, error) {
 	diff := difflib.UnifiedDiff{
-		A:        difflib.SplitLines(response1),
-		B:        difflib.SplitLines(response2),
+		A:        difflib.SplitLines(newResponse, true),
+		B:        difflib.SplitLines(oldResponse, true),
 		FromFile: "Old",
 		ToFile:   "Current",
 		Context:  3,
@@ -144,7 +144,7 @@ func getDifferences(response1 string, response2 string) (differences, error) {
 	return result, nil
 }
 
-func sendEmail(diffs differences, fromEmail string, toEmail string, url string, smtpTLSHost string) error {
+func sendEmail(diffs differences, fromEmail string, toEmail string, url string, tlsConfig *tls.Config) error {
 	message := gomail.NewMessage()
 	message.SetHeader("From", fromEmail)
 	message.SetHeader("To", toEmail)
@@ -152,7 +152,7 @@ func sendEmail(diffs differences, fromEmail string, toEmail string, url string, 
 	message.SetBody("text/html", diffs.html)
 	message.AddAlternative("text/plain", diffs.text)
 
-	mail := gomail.Dialer{Host: "localhost", Port: 587, TLSConfig: &tls.Config{ServerName: smtpTLSHost}}
+	mail := gomail.Dialer{Host: "localhost", Port: 587, TLSConfig: tlsConfig}
 	err := mail.DialAndSend(message)
 	if err != nil {
 		return fmt.Errorf("Unable to send Email: %s", err)
@@ -206,7 +206,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	resultData, err := getLastEntries(db)
+	resultData, err := getLastEntries(db, *scanUrl)
 
 	if len(resultData) < 2 {
 		log.Println("Not enough Data crawled for comparing")
@@ -215,13 +215,13 @@ func main() {
 		log.Fatal("We got to much entries from Database: ", len(resultData))
 	}
 
-	diffs, err := getDifferences(resultData[0].response, resultData[1].response)
+	diffs, err := getDifferences(resultData[1].response, resultData[0].response)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if (differences{}) != diffs {
-		err = sendEmail(diffs, *fromEmail, *toEmail, resultData[0].url, *smtpTLSHost)
+		err = sendEmail(diffs, *fromEmail, *toEmail, resultData[0].url, &tls.Config{ServerName: *smtpTLSHost})
 		if err != nil {
 			log.Fatal(err)
 		}

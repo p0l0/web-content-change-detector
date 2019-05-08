@@ -1,10 +1,10 @@
-VERSION=0.0.4
+VERSION=0.0.5
 
 # Darwin or Linux
 ARCH=$(shell bash -c "uname | tr '[:upper:]' '[:lower:]'")
 DESTDIR="bin"
 
-.PHONY: all release-darwin-linux release-linux-darwin deps test
+.PHONY: all release-darwin-linux release-linux-darwin deps test racetest
 
 ifeq ($(ARCH), darwin)
 all: release-darwin-linux
@@ -33,9 +33,14 @@ deps:
 
 test: deps
 	$(info Running tests...)
+	@cd difflib; go test
 	@go test -v -coverprofile .coverage.txt
 	@go tool cover -func .coverage.txt
 
 coverage: test
 	@go tool cover -html=.coverage.txt
 
+racetest: deps
+	$(info Running tests...)
+	@go test -race -v -coverprofile .coverage.txt
+	@go tool cover -func .coverage.txt
