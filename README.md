@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/_p0l0_/web-content-change-detector/badges/master/pipeline.svg)](https://gitlab.com/_p0l0_/web-content-change-detector/commits/master) [![coverage report](https://gitlab.com/_p0l0_/web-content-change-detector/badges/master/coverage.svg)](https://gitlab.com/_p0l0_/web-content-change-detector/commits/master)
+[![Go](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml/badge.svg)](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml) [![coverage report](https://gitlab.com/_p0l0_/web-content-change-detector/badges/master/coverage.svg)](https://gitlab.com/_p0l0_/web-content-change-detector/commits/master)
 
 # Web Content Change Detector
 
