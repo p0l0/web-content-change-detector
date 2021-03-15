@@ -25,4 +25,5 @@ jobs:
       run: |
         mkdir -p /home/runner/go/src/github.com/p0l0
         ln -s $PWD /home/runner/go/src/github.com/p0l0/web-content-change-detector
+        cd /home/runner/go/src/github.com/p0l0/web-content-change-detector
         make test
