@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"gitlab.com/_p0l0_/web-content-change-detector/difflib"
+	"github.com/p0l0/web-content-change-detector/difflib"
 	"gopkg.in/gomail.v2"
 	"html"
 	"io/ioutil"
