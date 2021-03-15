@@ -71,7 +71,7 @@ func TestGetContentSuccess(t *testing.T) {
 func TestGetContentRequestError(t *testing.T) {
 	invalidURL := "http:// test.com"
 	response, err := getContent(invalidURL)
-	expectedError := "parse " + invalidURL + ": invalid character \" \" in host name"
+	expectedError := "parse \"" + invalidURL + "\": invalid character \" \" in host name"
 	assert.Equal(t, expectedError, err.Error())
 	assert.Nil(t, response)
 }
@@ -80,7 +80,7 @@ func TestGetContentRequestError(t *testing.T) {
 func TestGetContentURLError(t *testing.T) {
 	invalidURL := "test.com"
 	response, err := getContent(invalidURL)
-	expectedError := "Error getting Response: Get " + invalidURL + ": unsupported protocol scheme \"\""
+	expectedError := "Error getting Response: Get \"" + invalidURL + "\": unsupported protocol scheme \"\""
 	assert.Equal(t, expectedError, err.Error())
 	assert.Nil(t, response)
 }
