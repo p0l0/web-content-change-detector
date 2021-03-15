@@ -24,7 +24,7 @@ jobs:
     # Needs to be run as root, for mocking SMTP
     - name: Test
       run: |
-        mkdir -p /home/runner/go/src/github.com/p0l0
-        ln -s $PWD /home/runner/go/src/github.com/p0l0/web-content-change-detector
-        cd /home/runner/go/src/github.com/p0l0/web-content-change-detector
+        sudo mkdir -p /root/go/src/github.com/p0l0
+        sudo ln -s $PWD /root/go/src/github.com/p0l0/web-content-change-detector
+        sudo cd /root/go/src/github.com/p0l0/web-content-change-detector
         sudo make test
