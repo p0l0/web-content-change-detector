@@ -9,12 +9,18 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  GOPATH: /home/runner/work/web-content-change-detector/web-content-change-detector/go
+
 jobs:
 
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: go/src/github.com/p0l0/web-content-change-detector
+      
 
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -24,10 +30,17 @@ jobs:
 #     - name: Build
 #       run: go build -v ./...
 
+    - name: Debug
+      run: |
+        sudo pwd
+        sudo echo ${HOME}
+        sudo echo ${GITHUB_WORKSPACE}
+        sudo echo ${GOPATH}
+        sudo echo ${GOROOT}
+
     # Needs to be run as root, for mocking SMTP
     - name: Test
       run: |
-        sudo mkdir -p /root/go/src/github.com/p0l0
-        sudo ln -s $PWD /root/go/src/github.com/p0l0/web-content-change-detector
-        sudo cd /root/go/src/github.com/p0l0/web-content-change-detector
+        cd ${GITHUB_WORKSPACE}/go/src/github.com/p0l0/web-content-change-detector
         sudo make test
+
