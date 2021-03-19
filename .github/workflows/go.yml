@@ -43,4 +43,5 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/go/src/github.com/p0l0/web-content-change-detector
         sudo make test
+        bash <(curl -s https://codecov.io/bash)
 

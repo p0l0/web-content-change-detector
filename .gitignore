@@ -1,4 +1,4 @@
 .idea
-.coverage.txt
+coverage.txt
 data.sqlite
 bin/*

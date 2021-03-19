@@ -34,13 +34,13 @@ deps:
 test: deps
 	$(info Running tests...)
 	@cd difflib; go test
-	@go test -v -coverprofile .coverage.txt
-	@go tool cover -func .coverage.txt
+	@go test -v -coverprofile coverage.txt -covermode=atomic
+	@go tool cover -func coverage.txt
 
 coverage: test
-	@go tool cover -html=.coverage.txt
+	@go tool cover -html=coverage.txt
 
 racetest: deps
 	$(info Running tests...)
-	@go test -race -v -coverprofile .coverage.txt
-	@go tool cover -func .coverage.txt
+	@go test -race -v -coverprofile coverage.txt -covermode=atomic
+	@go tool cover -func coverage.txt
