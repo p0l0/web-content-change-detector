@@ -1,4 +1,4 @@
-[![Go](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml/badge.svg)](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml) [![coverage report](https://gitlab.com/_p0l0_/web-content-change-detector/badges/master/coverage.svg)](https://gitlab.com/_p0l0_/web-content-change-detector/commits/master)
+[![Go](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml/badge.svg)](https://github.com/p0l0/web-content-change-detector/actions/workflows/go.yml) [![codecov](https://codecov.io/gh/p0l0/web-content-change-detector/branch/main/graph/badge.svg?token=0ZG1E7NZJT)](https://codecov.io/gh/p0l0/web-content-change-detector) 
 
 # Web Content Change Detector
 
